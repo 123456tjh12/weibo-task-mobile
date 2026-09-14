@@ -1,0 +1,8 @@
+<resources>
+    <style name="Theme.WeiboTask" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="colorPrimary">#315EFB</item>
+        <item name="colorPrimaryVariant">#2448C8</item>
+        <item name="colorOnPrimary">#FFFFFF</item>
+        <item name="android:fontFamily">sans</item>
+    </style>
+</resources>
