@@ -11,7 +11,6 @@ permissions:
 jobs:
   build:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -42,8 +41,31 @@ jobs:
         with:
           gradle-version: '8.7'
 
+      # ★1 新增：还原签名密钥
+      - name: Decode keystore
+        shell: bash
+        env:
+          KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+        run: |
+          if [ -z "$KEYSTORE_BASE64" ]; then
+            echo "::warning::未配置 KEYSTORE_BASE64，本次将使用默认 debug 签名（每次构建签名都不同）"
+            exit 0
+          fi
+          echo "$KEYSTORE_BASE64" | base64 -d > "$RUNNER_TEMP/release.keystore"
+          echo "keystore 已还原，大小: $(stat -c%s "$RUNNER_TEMP/release.keystore") 字节"
+          echo "--- 签名指纹（应为 46:D1:A2:...:58:35）---"
+          keytool -list -v -keystore "$RUNNER_TEMP/release.keystore" \
+            -storepass "$KEYSTORE_PASSWORD" | grep -E "SHA1:|SHA256:" || true
+
+      # ★2 修改：构建时注入签名参数
       - name: Build debug APK
         working-directory: source/android
+        env:
+          KEYSTORE_PATH: ${{ runner.temp }}/release.keystore
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
         run: gradle assembleDebug --no-daemon
 
       - name: Read app version
