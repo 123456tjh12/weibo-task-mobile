@@ -1,3 +1,21 @@
+# 星签 Android APK 构建
+#
+# 本次修改（★3）：修复 "Set up Android SDK" 步骤失败
+#
+#   原因：android-actions/setup-android 的默认 packages 输入是 "tools platform-tools"，
+#         而 Google 已经把 SDK 仓库里的 "tools" 包**彻底移除**
+#         （repository2-1/2-2/2-3.xml 里 path="tools" 均已不存在）。
+#         所以该 action 接受完许可协议后去装 tools 必然报错，步骤直接失败，
+#         后面所有步骤（Decode keystore / Build / 上传 / Release）全部被跳过。
+#
+#   修法：1) 显式传 packages: ''  —— 不再装那个已不存在的 tools
+#         2) v3 → v4            —— v3 声明的是 node20，已被 GitHub 弃用并强制跑在 node24 上
+#         3) 加 continue-on-error —— 这个 action 万一再出问题，也不至于整条流水线断掉
+#         4) 新增 "Ensure Android SDK packages" 步骤 —— 自己把许可协议和目标包装好，
+#            不依赖这个第三方 action
+#
+# 之前的修改（保留）：★1 还原签名密钥；★2 构建时注入签名参数
+
 name: Build Android APK
 
 on:
@@ -33,15 +51,48 @@ jobs:
           distribution: temurin
           java-version: '17'
 
+      # ★3 修改：packages 置空，不再安装已被移除的 "tools" 包
       - name: Set up Android SDK
-        uses: android-actions/setup-android@v3
+        uses: android-actions/setup-android@v4
+        continue-on-error: true
+        with:
+          packages: ''
+
+      # ★3 新增：自己保证 SDK 可用，不依赖上面那个第三方 action
+      - name: Ensure Android SDK packages
+        shell: bash
+        run: |
+          set -u
+          SDK_ROOT="${ANDROID_SDK_ROOT:-${ANDROID_HOME:-/usr/local/lib/android/sdk}}"
+          echo "SDK_ROOT=$SDK_ROOT"
+          echo "ANDROID_SDK_ROOT=$SDK_ROOT" >> "$GITHUB_ENV"
+          echo "ANDROID_HOME=$SDK_ROOT" >> "$GITHUB_ENV"
+
+          SDKMGR="$(find "$SDK_ROOT/cmdline-tools" -name sdkmanager -type f 2>/dev/null | head -n 1)"
+          echo "sdkmanager: ${SDKMGR:-未找到}"
+          if [ -n "$SDKMGR" ]; then
+            # 接受许可协议（失败不致命，下面会打印实际可用包）
+            yes | "$SDKMGR" --licenses > /dev/null 2>&1 || true
+            # 只装真正需要的包（注意：不要装 tools，它已经不存在了）
+            yes | "$SDKMGR" "platform-tools" "platforms;android-34" "build-tools;34.0.0" > /dev/null 2>&1 || true
+          fi
+
+          # Gradle 也认这个文件，双保险
+          if [ -d source/android ]; then
+            echo "sdk.dir=$SDK_ROOT" > source/android/local.properties
+          fi
+
+          echo "--- platforms ---"
+          ls "$SDK_ROOT/platforms" 2>/dev/null || echo "(无)"
+          echo "--- build-tools ---"
+          ls "$SDK_ROOT/build-tools" 2>/dev/null || echo "(无)"
 
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v4
         with:
           gradle-version: '8.7'
 
-      # ★1 新增：还原签名密钥
+      # ★1 还原签名密钥（放在构建之前）
       - name: Decode keystore
         shell: bash
         env:
@@ -58,7 +109,7 @@ jobs:
           keytool -list -v -keystore "$RUNNER_TEMP/release.keystore" \
             -storepass "$KEYSTORE_PASSWORD" | grep -E "SHA1:|SHA256:" || true
 
-      # ★2 修改：构建时注入签名参数
+      # ★2 构建时注入签名参数
       - name: Build debug APK
         working-directory: source/android
         env:
