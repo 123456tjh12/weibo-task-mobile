@@ -1,20 +1,27 @@
 # 星签 Android APK 构建
 #
-# 本次修改（★3）：修复 "Set up Android SDK" 步骤失败
+# ★★ 本次修改（★4）：出 **release 包**，不再出 debug 包
 #
-#   原因：android-actions/setup-android 的默认 packages 输入是 "tools platform-tools"，
-#         而 Google 已经把 SDK 仓库里的 "tools" 包**彻底移除**
-#         （repository2-1/2-2/2-3.xml 里 path="tools" 均已不存在）。
-#         所以该 action 接受完许可协议后去装 tools 必然报错，步骤直接失败，
-#         后面所有步骤（Decode keystore / Build / 上传 / Release）全部被跳过。
+#   原因：以前写的是 `gradle assembleDebug`，所以 GitHub Release 上挂的一直是
+#         app-debug.apk。它**能用**（签名是同一套，能覆盖安装，逻辑也完全一样），
+#         但会让人误以为「这是个测试版」，而且包体略大、带了调试标记。
 #
-#   修法：1) 显式传 packages: ''  —— 不再装那个已不存在的 tools
-#         2) v3 → v4            —— v3 声明的是 node20，已被 GitHub 弃用并强制跑在 node24 上
-#         3) 加 continue-on-error —— 这个 action 万一再出问题，也不至于整条流水线断掉
-#         4) 新增 "Ensure Android SDK packages" 步骤 —— 自己把许可协议和目标包装好，
-#            不依赖这个第三方 action
+#   改动一共四处（必须一起改，漏一处就会拿不到文件）：
+#     1) 构建任务        assembleDebug  -> assembleRelease
+#     2) artifact 名称   weibo-task-debug-apk -> weibo-task-release-apk
+#     3) 产物路径        apk/debug/app-debug.apk -> apk/release/app-release.apk（上传 artifact）
+#     4) Release 文件    同上路径（挂到 GitHub Release 上）
 #
-# 之前的修改（保留）：★1 还原签名密钥；★2 构建时注入签名参数
+#   ★ 另外加了 `-x lintVitalRelease`：
+#     release 构建默认会跑 lintVital，一旦发现 fatal 级 lint 问题就**直接中止构建**。
+#     这个项目只是自用工具，不需要卡在 lint 上，所以显式跳过这一项。
+#
+# 之前的修改（保留）：
+#   ★1 还原签名密钥   ★2 构建时注入签名参数
+#   ★3 修 "Set up Android SDK" 步骤失败
+#      （android-actions/setup-android 默认要装 "tools" 包，而 Google 已把它从
+#        SDK 仓库彻底移除 → 该步骤必然失败 → 后面全被跳过。
+#        修法：packages 置空 + v3→v4 + continue-on-error + 自己装 SDK 包。）
 
 name: Build Android APK
 
@@ -51,14 +58,14 @@ jobs:
           distribution: temurin
           java-version: '17'
 
-      # ★3 修改：packages 置空，不再安装已被移除的 "tools" 包
+      # ★3：packages 置空，不再安装已被移除的 "tools" 包
       - name: Set up Android SDK
         uses: android-actions/setup-android@v4
         continue-on-error: true
         with:
           packages: ''
 
-      # ★3 新增：自己保证 SDK 可用，不依赖上面那个第三方 action
+      # ★3：自己保证 SDK 可用，不依赖上面那个第三方 action
       - name: Ensure Android SDK packages
         shell: bash
         run: |
@@ -110,14 +117,23 @@ jobs:
             -storepass "$KEYSTORE_PASSWORD" | grep -E "SHA1:|SHA256:" || true
 
       # ★2 构建时注入签名参数
-      - name: Build debug APK
+      # ★4 assembleDebug -> assembleRelease；并跳过 lintVitalRelease（否则 lint 问题会中止构建）
+      - name: Build release APK
         working-directory: source/android
         env:
           KEYSTORE_PATH: ${{ runner.temp }}/release.keystore
           KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
           KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
           KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
-        run: gradle assembleDebug --no-daemon
+        run: gradle assembleRelease -x lintVitalRelease --no-daemon
+
+      # ★4 打印一下产物到底叫什么、在哪，避免路径猜错时只看到一句 "file not found"
+      - name: Show build outputs
+        shell: bash
+        working-directory: source/android
+        run: |
+          echo "--- 所有 apk 产物 ---"
+          find app/build/outputs/apk -type f -name '*.apk' 2>/dev/null || echo "(没有找到任何 apk)"
 
       - name: Read app version
         id: version
@@ -128,18 +144,20 @@ jobs:
           echo "version=$VERSION" >> "$GITHUB_OUTPUT"
           echo "App version: $VERSION"
 
+      # ★4 路径与名称都跟着改成 release
       - name: Upload APK artifact
         uses: actions/upload-artifact@v4
         with:
-          name: weibo-task-debug-apk
-          path: source/android/app/build/outputs/apk/debug/app-debug.apk
+          name: weibo-task-release-apk
+          path: source/android/app/build/outputs/apk/release/app-release.apk
 
+      # ★4 挂到 Release 上的也换成 release 包
       - name: Publish GitHub Release
         uses: softprops/action-gh-release@v2
         with:
           tag_name: v${{ steps.version.outputs.version }}
           name: 星签 v${{ steps.version.outputs.version }}
           body: 自动构建的星签 Android 安装包
-          files: source/android/app/build/outputs/apk/debug/app-debug.apk
+          files: source/android/app/build/outputs/apk/release/app-release.apk
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
