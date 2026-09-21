@@ -22,8 +22,17 @@ android {
         applicationId = "com.tjh.weibotask"
         minSdk = 26
         targetSdk = 34
-        versionCode = 12
-        versionName = "0.12.0"
+        versionCode = 41
+        versionName = "0.20.0"
+    }
+
+    // ★★ AGP 8.0 起 `buildConfig` 默认是 **关闭** 的：不显式打开，就不会生成 BuildConfig 类。
+    //   首页那行「版本：0.19.x（构建号 NN）」用的正是 BuildConfig.VERSION_NAME / VERSION_CODE，
+    //   少了这个开关，CI 会直接编译失败：
+    //       e: MainActivity.kt:311:50 Unresolved reference: BuildConfig
+    //   （v0.19.6 就是这样挂了 —— 本机没有 JDK/Android SDK，静态检查查不出「类不存在」这类错误。）
+    buildFeatures {
+        buildConfig = true
     }
 
     signingConfigs {
