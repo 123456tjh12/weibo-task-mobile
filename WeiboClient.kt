@@ -1299,7 +1299,7 @@ object WeiboClient {
     ): JSONObject {
         val form = StringBuilder()
             .append("content=").append(URLEncoder.encode(content, "UTF-8"))
-            .append("&extparam=").append(URLEncoder.encode(topic.containerId, "UTF-8"))
+            .append("&extparam=").append(URLEncoder.encode("1022:" + topic.containerId, "UTF-8"))
             .append("&c=android")
             .append("&from=")
             .append("&s=")
