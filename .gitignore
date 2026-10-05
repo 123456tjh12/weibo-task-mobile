@@ -1,0 +1,7 @@
+_tools/
+*.py
+*.ps1
+*.bat
+_devlog.json
+_release_notes.md
+README.md

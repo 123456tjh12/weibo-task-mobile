@@ -1,0 +1,14 @@
+{
+  "version": "0.20.20",
+  "tag": "v0.20.20",
+  "url": "https://github.com/123456tjh12/weibo-task-mobile/releases/download/v0.20.20/app-release.apk",
+  "size": 5572265,
+  "assetName": "app-release.apk",
+  "publishedAt": "2026-09-25T10:32:41Z",
+  "devVersion": "0.20.89",
+  "devVersionCode": 130,
+  "md5": "95e2350375d7c5169f4acf9871e45290",
+  "notes": [
+    "自动构建的星签 Android 安装包"
+  ]
+}
