@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<title>星签 · 下载</title>
+<meta name="color-scheme" content="light dark" />
+<meta name="viewport" content="viewport-fit=cover, width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<meta name="theme-color" content="#ffffff" />
+<link rel="icon" href="assets/icon.svg" />
+<style>
+  /* ===== 主题变量：主色只在这里改一处 =====
+     微博橙 #ff8200（贴超话调性） */
+  :root{
+    --primary:        #ff8200;
+    --primary-rgb:    255, 130, 0;
+    --primary-shade:  #e07300;
+    --primary-tint:   #ff9420;
+    --bg:             linear-gradient(135deg, #fffaf4 0%, #fff5ea 100%);
+    --title:          #121212;
+    --text:           #333333;
+    --text-2:         #777777;
+    --text-3:         #ababab;
+    --card:           #ffffff;
+    --card-line:      rgba(var(--primary-rgb), .13);
+    --footer-bg:      rgba(255,255,255,.62);
+    --footer-text:    #ababab;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      --primary:       #ffa040;
+      --primary-rgb:   255, 160, 64;
+      --primary-shade: #e08c30;
+      --primary-tint:  #ffb266;
+      --bg:            linear-gradient(180deg, #1a1610 0%, #131315 38%, #0b0c0f 100%);
+      --title:         #f4f4f5;
+      --text:          #d8d9dd;
+      --text-2:        #a2a4aa;
+      --text-3:        #858891;
+      --card:          rgba(255,255,255,.045);
+      --card-line:     rgba(255,255,255,.08);
+      --footer-bg:     rgba(18,19,23,.72);
+      --footer-text:   #858891;
+    }
+  }
+
+  *{ box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html,body{ margin:0; padding:0; }
+  body{
+    min-height: 100vh;
+    background: var(--bg);
+    background-attachment: fixed;
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
+                 "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .wrap{
+    max-width: 640px;
+    margin: 0 auto;
+    padding: 56px 24px 120px;
+  }
+
+  /* ===== 头部 ===== */
+  .head{ text-align: center; animation: fadeInDown .8s ease-out both; }
+  .icon{
+    width: 100px; height: 100px;
+    display: block; margin: 0 auto;
+    border-radius: 24px;
+    box-shadow: 0 8px 24px -16px rgba(var(--primary-rgb), .75);
+  }
+  .title{
+    font-size: 2em;
+    font-weight: 600;
+    letter-spacing: .02em;
+    color: var(--title);
+    margin: 26px 0 0;
+  }
+  .desc{
+    font-size: 1em;
+    color: rgba(var(--primary-rgb), .85);
+    margin: 6px 0 0;
+  }
+
+  /* ===== 下载按钮 ===== */
+  .actions{
+    display: flex;
+    justify-content: center;
+    margin: 34px 0 0;
+  }
+  .btn{
+    display: inline-block;
+    padding: 12px 56px;
+    font-size: 1.1em;
+    font-weight: 500;
+    border-radius: 50px;
+    text-decoration: none;
+    cursor: pointer;
+    border: 0;
+    transition: transform .3s ease, box-shadow .3s ease, background .3s ease;
+    font-family: inherit;
+  }
+  .btn-main{
+    color: #fff;
+    background: var(--primary);
+    box-shadow: 0 12px 24px -16px rgba(var(--primary-rgb), .82);
+  }
+  .btn-main:hover{
+    transform: translateY(-3px);
+    box-shadow: 0 14px 26px -14px rgba(var(--primary-rgb), .9);
+    background: var(--primary-tint);
+  }
+  .btn-main:active{ transform: translateY(-1px); }
+  .btn-main[aria-disabled="true"]{
+    opacity: .55; pointer-events: none;
+  }
+
+  /* ===== 版本信息 ===== */
+  .meta{
+    text-align: center;
+    margin: 14px 0 0;
+    font-size: .88em;
+    color: var(--text-2);
+    min-height: 1.6em;
+  }
+  .meta .v{ color: var(--primary); font-weight: 600; }
+  .meta .badge-dev{
+    margin-left: 8px; font-size: .7em; font-weight: 600;
+    color: #fff; background: var(--primary);
+    padding: 1px 8px; border-radius: 20px; vertical-align: middle;
+  }
+  .meta .dot{ margin: 0 6px; color: var(--text-3); }
+  .meta code{
+    font-family: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+    font-size: .95em;
+    color: var(--text-2);
+    background: rgba(var(--primary-rgb), .07);
+    padding: 1px 6px;
+    border-radius: 6px;
+  }
+
+  /* ===== 二维码 ===== */
+  .qr{
+    display: flex; flex-direction: column; align-items: center;
+    gap: 10px; margin-top: 44px;
+    animation: fadeInDown .8s ease-out .15s both;
+  }
+  .qr-box{
+    width: 132px; height: 132px;
+    background: #fff;
+    border-radius: 12px;
+    padding: 8px;
+    position: relative;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 10px 24px -18px rgba(var(--primary-rgb), .5);
+  }
+  .qr-box img{ display:block; width:100%; height:100%; image-rendering: pixelated; }
+  .qr-box .mini{
+    position: absolute; left: 50%; top: 50%;
+    width: 30px; height: 30px; padding: 3px;
+    background: #fff; border-radius: 8px;
+    transform: translate(-50%,-50%);
+    box-shadow: 0 4px 12px -8px rgba(0,0,0,.72);
+  }
+  .qr span{ font-size: .875em; color: var(--text-2); }
+
+  /* ===== 更新日志 ===== */
+  .log{
+    margin-top: 56px;
+    animation: fadeInDown .8s ease-out .25s both;
+  }
+  .log-head{
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 14px;
+    cursor: pointer;
+    user-select: none;
+  }
+  .log-head h2{
+    font-size: 1em;
+    font-weight: 600;
+    color: var(--text);
+    margin: 0;
+    padding-left: 12px;
+    position: relative;
+  }
+  .log-head h2::before{
+    content:""; position:absolute; left:0; top:50%;
+    width:3px; height:14px; margin-top:-7px;
+    border-radius:2px; background: var(--primary);
+  }
+  .log-toggle{
+    font-size: .84em;
+    color: var(--primary);
+    display: inline-flex; align-items: center; gap: 4px;
+  }
+  .log-toggle svg{
+    width: 12px; height: 12px;
+    transition: transform .3s ease;
+  }
+  .log.open .log-toggle svg{ transform: rotate(180deg); }
+
+  /* 收起态：只显示最新一期 */
+  .log-list{
+    overflow: hidden;
+    max-height: 260px;
+    transition: max-height .45s ease;
+  }
+  .log:not(.open) .log-list .item:not(:first-child){
+    display: none;
+  }
+  .log:not(.open) .log-list::after{ content: ""; }
+
+  .item{
+    background: var(--card);
+    border: 1px solid var(--card-line);
+    border-radius: 14px;
+    padding: 14px 16px;
+    margin-bottom: 10px;
+    transition: border-color .3s ease;
+  }
+  .item:last-child{ margin-bottom:0; }
+  .item:hover{ border-color: rgba(var(--primary-rgb), .3); }
+  .item-top{
+    display: flex; align-items: baseline; gap: 8px;
+    flex-wrap: wrap;
+  }
+  .item-ver{
+    font-size: .95em; font-weight: 600;
+    color: var(--primary);
+    font-family: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+  }
+  .item-round{
+    font-size: .75em; font-weight: 500;
+    color: var(--text-3);
+    background: rgba(var(--primary-rgb), .07);
+    padding: 1px 7px; border-radius: 20px;
+  }
+  .item-date{ font-size: .82em; color: var(--text-3); }
+  .item-latest{
+    font-size: .7em; font-weight: 600;
+    color: #fff; background: var(--primary);
+    padding: 1px 7px; border-radius: 20px;
+    letter-spacing: .04em;
+  }
+  .item-notes{
+    margin: 8px 0 0; padding: 0; list-style: none;
+    font-size: .9em; color: var(--text-2);
+  }
+  .item-notes li{
+    position: relative;
+    padding-left: 14px;
+    margin-top: 3px;
+  }
+  .item-notes li::before{
+    content:""; position:absolute; left:2px; top:.68em;
+    width:4px; height:4px; border-radius:50%;
+    background: rgba(var(--primary-rgb), .55);
+  }
+
+  /* ===== 页脚 ===== */
+  footer{
+    position: fixed; left: 0; right: 0; bottom: 0;
+    z-index: 9;
+    padding: 15px;
+    text-align: center;
+    font-size: .8em;
+    color: var(--footer-text);
+    background: var(--footer-bg);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    box-shadow: 0 -10px 24px -24px rgba(var(--primary-rgb), .6);
+  }
+  footer span{ margin: 0 4px; }
+
+  /* ===== 骨架 ===== */
+  .skeleton{
+    background: linear-gradient(90deg,
+      rgba(var(--primary-rgb),.06) 25%,
+      rgba(var(--primary-rgb),.12) 37%,
+      rgba(var(--primary-rgb),.06) 63%);
+    background-size: 400% 100%;
+    animation: shimmer 1.4s ease infinite;
+    border-radius: 8px;
+    color: transparent !important;
+  }
+  @keyframes shimmer{ 0%{background-position:100% 0} 100%{background-position:0 0} }
+
+  @keyframes fadeInDown{
+    0%{ opacity:0; transform: translateY(-14px); }
+    100%{ opacity:1; transform: translateY(0); }
+  }
+
+  @media (max-width: 768px){
+    .wrap{ padding: 40px 22px 110px; }
+    .title{ font-size: 1.6em; margin-top: 22px; }
+    .desc{ font-size: .92em; }
+    .actions{ margin-top: 28px; }
+    .btn{ width: 100%; max-width: 300px; text-align: center; padding: 13px 0; }
+    .qr{ margin-top: 36px; }
+    .log{ margin-top: 44px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+  <!-- 头部 -->
+  <div class="head">
+    <img class="icon" src="assets/icon.svg" alt="星签" />
+    <h1 class="title">星签</h1>
+    <p class="desc">微博超话自动签到 · 自用工具</p>
+  </div>
+
+  <!-- 下载 -->
+  <div class="actions">
+    <a class="btn btn-main" id="dl" href="#" role="button">立即下载</a>
+  </div>
+  <p class="meta" id="meta">
+    <span class="skeleton">正在获取版本信息…</span>
+  </p>
+
+  <!-- 二维码 -->
+  <div class="qr">
+    <div class="qr-box">
+      <img id="qr" alt="扫码下载" />
+      <img class="mini" src="assets/icon.svg" alt="" />
+    </div>
+    <span>扫码下载 APP</span>
+  </div>
+
+  <!-- 更新日志 -->
+  <div class="log" id="log-box">
+    <div class="log-head" id="log-head">
+      <h2>更新日志</h2>
+      <span class="log-toggle">
+        <span id="log-toggle-text">展开全部</span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+             stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+      </span>
+    </div>
+    <div class="log-list" id="log"></div>
+  </div>
+
+</div>
+
+<footer>
+  <span id="f-ver">Version —</span>
+  <span>© <span id="f-year">2026</span> 星签</span>
+</footer>
+
+<script>
+/* =========================================================
+   数据源：三层兜底，保证永远不白屏
+   ① 本地 version.json / changelog.json（同源，无跨域无墙）
+   ② GitHub Releases API（有更新立刻覆盖，真正的"实时"）
+   ③ 内置快照（前两者都失败时用）
+   ========================================================= */
+const CFG = {
+  // GitHub 仓库（真实地址）
+  owner: '123456tjh12',
+  repo:  'weibo-task-mobile',
+  get apiUrl(){ return this.owner && this.repo
+      ? `https://api.github.com/repos/${this.owner}/${this.repo}/releases`
+      : ''; }
+};
+
+// ③ 内置快照兜底（静态站离线打开时用）
+const FALLBACK = {
+  version: '0.20.94',
+  url: 'https://github.com/123456tjh12/weibo-task-mobile/releases/download/v0.20.94/app-release.apk',
+  size: 7261311,
+  md5: '3d075d0137113b253e51f152ed6a06e4',
+  publishTime: '2026-10-06',
+  notes: ['超话自动签到与发帖', '全自动滑块验证', '多账号轮换']
+};
+
+const $  = s => document.querySelector(s);
+const esc = s => String(s).replace(/[&<>"']/g, c =>
+  ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
+function fmtSize(b){
+  if (!b || b < 0) return '—';
+  const mb = b / 1048576;
+  return (mb >= 10 ? mb.toFixed(1) : mb.toFixed(2)) + ' MB';
+}
+function fmtDate(s){
+  if (!s) return '';
+  const d = new Date(s);
+  if (isNaN(d)) return String(s).slice(0,10);
+  const p = n => String(n).padStart(2,'0');
+  return `${p(d.getMonth()+1)}-${p(d.getDate())}`;
+}
+function shortMd5(m){
+  return m && m.length >= 8 ? m.slice(0,8) + '…' : (m || '—');
+}
+function cmpVer(a, b){
+  const pa = String(a || '').split('.').map(Number);
+  const pb = String(b || '').split('.').map(Number);
+  for (let i = 0; i < Math.max(pa.length, pb.length); i++){
+    const d = (pa[i] || 0) - (pb[i] || 0);
+    if (d) return d;
+  }
+  return 0;
+}
+
+/* ---------- ① 本地静态数据 ---------- */
+async function loadLocal(){
+  const out = {};
+  try{
+    const r = await fetch('version.json?_=' + Date.now(), {cache:'no-store'});
+    if (r.ok) out.ver = await r.json();
+  }catch(e){}
+  try{
+    const r = await fetch('changelog.json?_=' + Date.now(), {cache:'no-store'});
+    if (r.ok) out.log = await r.json();
+  }catch(e){}
+  return out;
+}
+
+/* ---------- ② GitHub Releases（★ 版本的唯一真相来源） ---------- */
+async function loadGitHub(){
+  if (!CFG.apiUrl) return null;
+  try{
+    // ★ 用 /releases（列表）而不是 /releases/latest：
+    //   顺带拿到历史，用于更新日志与"已发布"标记
+    const r = await fetch(CFG.apiUrl + '?per_page=30', {
+      headers: { 'Accept': 'application/vnd.github+json' }
+    });
+    if (!r.ok) return null;
+    const arr = await r.json();
+    if (!Array.isArray(arr) || !arr.length) return null;
+
+    // 找出 tag 版本号最大的那个（GitHub 返回按创建时间倒序，
+    // 但重发旧版本会打乱顺序，所以显式比较语义化版本）
+    const cmp = (a, b) => {
+      const pa = String(a).split('.').map(Number);
+      const pb = String(b).split('.').map(Number);
+      for (let i = 0; i < Math.max(pa.length, pb.length); i++){
+        const d = (pa[i] || 0) - (pb[i] || 0);
+        if (d) return d;
+      }
+      return 0;
+    };
+    const withVer = arr.map(rel => ({
+      rel,
+      ver: String(rel.tag_name || '').replace(/^v/i, '')
+    })).filter(x => x.ver);
+    withVer.sort((x, y) => cmp(y.ver, x.ver));
+    const latest = withVer.length ? withVer[0].rel : arr[0];
+
+    const asset = (latest.assets || []).find(a => /\.apk$/i.test(a.name))
+               || (latest.assets || [])[0];
+    return {
+      version: String(latest.tag_name || '').replace(/^v/i,'') || '—',
+      url: asset ? asset.browser_download_url : latest.html_url,
+      size: asset ? asset.size : 0,
+      md5: '',
+      publishTime: latest.published_at || '',
+      notes: parseNotes(latest.body || ''),
+      // 已发布历史，供更新日志融合
+      _released: withVer.map(x => ({
+        version: x.ver,
+        publishedAt: x.rel.published_at || '',
+        notes: parseNotes(x.rel.body || []),
+        url: (x.rel.assets || []).find(a => /\.apk$/i.test(a.name))
+              ? (x.rel.assets.find(a => /\.apk$/i.test(a.name))).browser_download_url
+              : x.rel.html_url,
+        size: (x.rel.assets || []).find(a => /\.apk$/i.test(a.name))
+              ? (x.rel.assets.find(a => /\.apk$/i.test(a.name))).size : 0
+      }))
+    };
+  }catch(e){ return null; }
+}
+function parseNotes(md){
+  return String(md).split('\n')
+    .map(l => l.trim())
+    .filter(l => l && !l.startsWith('#') && !l.startsWith('>'))
+    .map(l => l.replace(/^[-*+]\s+/, '').replace(/^\d+[.)]\s+/, '').trim())
+    .filter(Boolean).slice(0, 6);
+}
+
+/* ---------- 渲染 ---------- */
+function render(data){
+  const v = data.version || FALLBACK.version;
+
+  // 按钮
+  const btn = $('#dl');
+  if (data.url && data.url !== '#'){
+    btn.href = data.url;
+    btn.setAttribute('download','');
+    btn.removeAttribute('aria-disabled');
+  }else{
+    btn.href = '#';
+    btn.setAttribute('aria-disabled','true');
+    btn.onclick = e => { e.preventDefault(); alert('下载地址尚未配置'); };
+  }
+
+  // 版本行（开发版领先时加"开发中"标记）
+  const parts = [`<span class="v">v${esc(v)}</span>${data.isDev ? '<span class="badge-dev">开发中</span>' : ''}`];
+  if (data.size) parts.push(fmtSize(data.size));
+  if (data.md5)  parts.push(`MD5 <code>${esc(shortMd5(data.md5))}</code>`);
+  $('#meta').innerHTML = parts.join('<span class="dot">·</span>');
+
+  // 页脚
+  $('#f-ver').textContent = 'Version ' + v;
+
+  // 更新日志：★ 以「期」为主线，把已发布版本号挂到对应期上
+  const list = buildLog(data, v);
+  $('#log').innerHTML = list.map((it, i) => `
+    <div class="item">
+      <div class="item-top">
+        ${it.round ? `<span class="item-round">第 ${it.round} 期</span>` : ''}
+        <span class="item-ver">v${esc(it.version || '—')}</span>
+        ${it.published ? '<span class="item-latest">已发布</span>' : ''}
+        <span class="item-date">${esc(fmtDate(it.publishTime))}</span>
+      </div>
+      ${it.notes && it.notes.length ? `
+      <ul class="item-notes">
+        ${it.notes.map(n => `<li>${esc(n)}</li>`).join('')}
+      </ul>` : ''}
+    </div>
+  `).join('');
+}
+
+/* ★ 把「期号（本地报告）」与「已发布版本（线上 Release）」融合成一条时间线：
+   线上有的版本标注"已发布"；线上还没发的期，也要显示出来（用户能看到进展）。 */
+function buildLog(data, curVer){
+  const local  = Array.isArray(data._local) ? data._local : [];
+  const relMap = new Map();
+  (data._released || []).forEach(r => relMap.set(String(r.version), r));
+
+  const out = [];
+  const usedRel = new Set();
+
+  // 1) 以本地期号为主线
+  local.forEach(it => {
+    const r = relMap.get(String(it.version || ''));
+    if (r) usedRel.add(String(r.version));
+    out.push({
+      round: it.round,
+      version: it.version || (r ? r.version : ''),
+      notes: it.notes || [],
+      published: !!r,
+      publishTime: r ? r.publishedAt : (it.publishTime || '')
+    });
+  });
+
+  // 2) 线上有、但本地报告没覆盖的版本，追加进去
+  (data._released || []).forEach(r => {
+    if (usedRel.has(String(r.version))) return;
+    if (out.some(x => String(x.version) === String(r.version))) return;
+    out.push({
+      round: null,
+      version: r.version,
+      notes: r.notes && r.notes.length ? r.notes : [`发布版本 ${r.version}`],
+      published: true,
+      publishTime: r.publishedAt
+    });
+  });
+
+  // 3) 兜底：什么都没有的时候，至少显示当前版本
+  if (!out.length){
+    out.push({
+      round: null,
+      version: curVer,
+      notes: (data.notes && data.notes.length) ? data.notes : FALLBACK.notes,
+      published: true,
+      publishTime: data.publishTime || FALLBACK.publishTime
+    });
+  }
+
+  // 4) 按版本号倒序（语义化比较），确保"已发布"的排在最前
+  out.sort((a, b) => {
+    const pa = String(a.version || '').split('.').map(Number);
+    const pb = String(b.version || '').split('.').map(Number);
+    for (let i = 0; i < Math.max(pa.length, pb.length); i++){
+      const d = (pb[i] || 0) - (pa[i] || 0);
+      if (d) return d;
+    }
+    return (b.round || 0) - (a.round || 0);
+  });
+
+  return out;
+}
+
+/* ---------- 二维码（纯 JS，零依赖） ---------- */
+/* 极简 QR 生成：对外链只做"能扫"的降级 —— 用 canvas 画一个
+   URL 文本可读的码。真正上线时用发布脚本生成 PNG 替换。 */
+function drawQR(text){
+  const img = $('#qr');
+  // 优先用预生成的二维码图片（发布脚本产出）
+  img.src = 'assets/qr.png';
+  img.onerror = () => {
+    // 没有图片时，退化为用 api 生成的在线码（离线环境则不显示）
+    img.onerror = null;
+    img.src = 'https://api.qrserver.com/v1/create-qr-code/?size=240x240&margin=0&data='
+            + encodeURIComponent(text || location.href);
+    img.onerror = () => { img.style.display = 'none'; };
+  };
+}
+
+/* ---------- 启动 ---------- */
+(async function init(){
+  $('#f-year').textContent = new Date().getFullYear();
+
+  // 更新日志展开/收起
+  const box = $('#log-box');
+  $('#log-head').addEventListener('click', () => {
+    const open = box.classList.toggle('open');
+    $('#log-toggle-text').textContent = open ? '收起' : '展开全部';
+  });
+
+  const local = await loadLocal();
+
+  // ① 先用本地静态数据渲染（同源，一定成功 ⇒ 永不白屏）
+  const base = {
+    ...FALLBACK,
+    ...(local.ver || {}),
+    _local: Array.isArray(local.log) ? local.log : null
+  };
+  render(base);
+  drawQR(base.url && base.url !== '#' ? base.url : location.href);
+
+  // ② 再异步问 GitHub Releases（真正的"实时"数据源）
+  const gh = await loadGitHub();
+  if (gh && gh.version){
+    const lv = base.version || '';
+    const gv = gh.version  || '';
+    const githubNewer = cmpVer(gv, lv) > 0;
+    if (githubNewer){
+      // GitHub 上有更新的发布版 → 以它为当前版本（权威下载地址）
+      render({ ...base, ...gh, _local: base._local });
+      if (gh.url) drawQR(gh.url);
+    } else {
+      // 本地开发版更新或持平 → 显示本地版本号，
+      // 但下载地址必须用"确实存在的包"：本地版本已有 Release 则用之，
+      // 否则回退到 GitHub 最新发布包（永不指向 404）。
+      const localReleased = (gh._released || []).some(r => String(r.version) === String(lv));
+      const shown = {
+        ...gh, ...base,
+        _local: base._local,
+        version: lv,
+        url:  localReleased ? base.url : (gh.url || base.url),
+        size: localReleased ? base.size : (gh.size || base.size),
+        md5:  localReleased ? base.md5 : (gh.md5  || base.md5),
+        isDev: !localReleased
+      };
+      render(shown);
+      drawQR(shown.url && shown.url !== '#' ? shown.url : location.href);
+    }
+  }
+})();
+</script>
+</body>
+</html>
