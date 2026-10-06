@@ -1,5 +1,45 @@
 [
   {
+    "round": 76,
+    "version": "0.20.94",
+    "title": "星签 0.20.94",
+    "notes": [
+      "发帖多段内容输入简化：正文框旁『＋ 添加一条』按钮自动插分隔符（发帖判定不变）"
+    ],
+    "published": false,
+    "publishTime": "2026-10-06T14:44:00Z"
+  },
+  {
+    "round": 75,
+    "version": "0.20.93",
+    "title": "星签 0.20.93",
+    "notes": [
+      "删除『悬浮窗实验』按钮与 OverlayProbe.kt，界面更简约（功能一个不少）"
+    ],
+    "published": false,
+    "publishTime": "2026-10-06T14:27:00Z"
+  },
+  {
+    "round": 74,
+    "version": "0.20.92",
+    "title": "星签 0.20.92",
+    "notes": [
+      "零风险小修：采样『张/组』口径文案修正；清理测试样本痕迹"
+    ],
+    "published": false,
+    "publishTime": "2026-10-06T14:22:00Z"
+  },
+  {
+    "round": 73,
+    "version": "0.20.91",
+    "title": "星签 0.20.91（73B）",
+    "notes": [
+      "删除 OpenCV 依赖，纯 Kotlin 滑块求解；APK 29.52MB→6.93MB，无 .so；真机验证通过"
+    ],
+    "published": false,
+    "publishTime": "2026-10-06T14:09:00Z"
+  },
+  {
     "round": null,
     "version": "0.20.20",
     "title": "星签 0.20.20",

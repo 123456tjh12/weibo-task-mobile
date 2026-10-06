@@ -1,14 +1,16 @@
 {
-  "version": "0.20.20",
-  "tag": "v0.20.20",
-  "url": "https://github.com/123456tjh12/weibo-task-mobile/releases/download/v0.20.20/app-release.apk",
-  "size": 5572265,
-  "assetName": "app-release.apk",
-  "publishedAt": "2026-09-25T10:32:41Z",
-  "devVersion": "0.20.89",
-  "devVersionCode": 130,
-  "md5": "95e2350375d7c5169f4acf9871e45290",
+  "version": "0.20.94",
+  "tag": "v0.20.94",
+  "url": "https://github.com/123456tjh12/weibo-task-mobile/releases/download/v0.20.94/%E6%98%9F%E7%AD%BE-0.20.94-debug.apk",
+  "size": 7261311,
+  "assetName": "星签-0.20.94-debug.apk",
+  "publishedAt": "2026-10-06T14:44:00Z",
+  "devVersion": "0.20.94",
+  "devVersionCode": 135,
+  "md5": "3d075d0137113b253e51f152ed6a06e4",
   "notes": [
-    "自动构建的星签 Android 安装包"
+    "发帖多段内容输入简化（＋ 添加一条按钮）",
+    "删除悬浮窗实验按钮，界面更简约",
+    "删除 OpenCV 依赖，纯 Kotlin 滑块求解（APK 6.93MB）"
   ]
 }
