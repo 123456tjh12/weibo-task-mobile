@@ -1,16 +1,16 @@
 {
-  "version": "0.20.94",
-  "tag": "v0.20.94",
-  "url": "https://github.com/123456tjh12/weibo-task-mobile/releases/download/v0.20.94/app-release.apk",
-  "size": 5983137,
+  "version": "0.20.95",
+  "tag": "v0.20.95",
+  "url": "https://github.com/123456tjh12/weibo-task-mobile/releases/download/v0.20.95/app-release.apk",
+  "size": 5988270,
   "assetName": "app-release.apk",
-  "publishedAt": "2026-10-06T14:44:00Z",
-  "devVersion": "0.20.94",
-  "devVersionCode": 135,
-  "md5": "0dc5cc7c62dd60db328f1bca5353449c",
+  "publishedAt": "2026-10-07T05:38:42Z",
+  "devVersion": "0.20.95",
+  "devVersionCode": 136,
+  "md5": "4a6dda6d6c491470a87a462d59f6f97d",
   "notes": [
-    "发帖多段内容输入简化（＋ 添加一条按钮）",
-    "删除悬浮窗实验按钮，界面更简约",
-    "删除 OpenCV 依赖，纯 Kotlin 滑块求解（APK 6.93MB）"
+    "全新界面改版：渐变状态卡、圆角卡片、统一表单样式",
+    "新增 4 个配色变量（含深色模式），卡片描边与投影更清晰",
+    "抽屉导航与账号列表样式统一，夜间模式同步适配"
   ]
 }
