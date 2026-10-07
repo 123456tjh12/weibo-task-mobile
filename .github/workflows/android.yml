@@ -144,12 +144,27 @@ jobs:
           echo "version=$VERSION" >> "$GITHUB_OUTPUT"
           echo "App version: $VERSION"
 
+      # ★★ 第 79 期：产物改成**带版本号的文件名**。
+      #   原因：以前每个版本都叫 app-release.apk，浏览器下载时**不会覆盖**旧文件
+      #   （会存成 app-release (1).apk），很容易点到上一次下的旧包；而装一个比手机上
+      #   更旧的版本，Android 会直接拒绝 ⇒ 表现为「下载的安装包不能覆盖安装」。
+      #   改成 XingQian-<版本>.apk 后：每个版本一个新文件名，一眼能分辨新旧。
+      - name: Rename APK with version
+        shell: bash
+        working-directory: source/android
+        run: |
+          SRC=app/build/outputs/apk/release/app-release.apk
+          DST="app/build/outputs/apk/release/XingQian-${{ steps.version.outputs.version }}.apk"
+          cp "$SRC" "$DST"
+          echo "已改名 -> $DST"
+          ls -la app/build/outputs/apk/release/
+
       # ★4 路径与名称都跟着改成 release
       - name: Upload APK artifact
         uses: actions/upload-artifact@v4
         with:
           name: weibo-task-release-apk
-          path: source/android/app/build/outputs/apk/release/app-release.apk
+          path: source/android/app/build/outputs/apk/release/*.apk
 
       # ★4 挂到 Release 上的也换成 release 包
       - name: Publish GitHub Release
@@ -158,6 +173,6 @@ jobs:
           tag_name: v${{ steps.version.outputs.version }}
           name: 星签 v${{ steps.version.outputs.version }}
           body: 自动构建的星签 Android 安装包
-          files: source/android/app/build/outputs/apk/release/app-release.apk
+          files: source/android/app/build/outputs/apk/release/XingQian-${{ steps.version.outputs.version }}.apk
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
