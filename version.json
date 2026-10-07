@@ -1,16 +1,17 @@
 {
-  "version": "0.20.96",
-  "tag": "v0.20.96",
-  "url": "https://github.com/123456tjh12/weibo-task-mobile/releases/download/v0.20.96/app-release.apk",
-  "size": 5988290,
-  "assetName": "app-release.apk",
-  "publishedAt": "2026-10-07T07:07:20Z",
-  "devVersion": "0.20.96",
-  "devVersionCode": 137,
-  "md5": "d0eed43bfeb6c4e52e512dd3c70a4847",
+  "version": "0.20.97",
+  "tag": "v0.20.97",
+  "url": "https://github.com/123456tjh12/weibo-task-mobile/releases/download/v0.20.97/XingQian-0.20.97.apk",
+  "size": 5988638,
+  "assetName": "XingQian-0.20.97.apk",
+  "publishedAt": "2026-10-07T09:40:45Z",
+  "devVersion": "0.20.97",
+  "devVersionCode": 138,
+  "md5": "19e3283690648ade2a1167c7973544c1",
   "notes": [
-    "修正主按钮颜色：浅色模式下「立即签到 / 立即发送」白字压浅灰底、几乎看不见",
-    "品牌渐变蓝恢复显示，与界面设计一致",
-    "纯界面属性修正，功能与判定零改动"
+    "滑块缺口识别提速：单次求解 672ms -> 379ms（真机实测 1.77×，PC 上约 3.0×）",
+    "原因是内层热循环被「逐字节读取 + AND 0xFF + int→float 转换」卡住，改为平面 FloatArray",
+    "结果与优化前逐位相同（8 组样本整张匹配矩阵指纹一致），判定零改动",
+    "安装包文件名改为带版本号（XingQian-0.20.97.apk），不再和旧版本同名，方便分辨"
   ]
 }
