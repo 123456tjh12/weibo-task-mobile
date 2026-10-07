@@ -1,17 +1,17 @@
 {
-  "version": "0.20.97",
-  "tag": "v0.20.97",
-  "url": "https://github.com/123456tjh12/weibo-task-mobile/releases/download/v0.20.97/XingQian-0.20.97.apk",
-  "size": 5988638,
-  "assetName": "XingQian-0.20.97.apk",
-  "publishedAt": "2026-10-07T09:40:45Z",
-  "devVersion": "0.20.97",
-  "devVersionCode": 138,
-  "md5": "19e3283690648ade2a1167c7973544c1",
+  "version": "0.20.98",
+  "tag": "v0.20.98",
+  "url": "https://github.com/123456tjh12/weibo-task-mobile/releases/download/v0.20.98/XingQian-0.20.98.apk",
+  "size": 5988850,
+  "assetName": "XingQian-0.20.98.apk",
+  "publishedAt": "2026-10-07T10:45:41Z",
+  "devVersion": "0.20.98",
+  "devVersionCode": 139,
+  "md5": "889899e8d3444527b75640a5fca53025",
   "notes": [
-    "滑块缺口识别提速：单次求解 672ms -> 379ms（真机实测 1.77×，PC 上约 3.0×）",
-    "原因是内层热循环被「逐字节读取 + AND 0xFF + int→float 转换」卡住，改为平面 FloatArray",
-    "结果与优化前逐位相同（8 组样本整张匹配矩阵指纹一致），判定零改动",
-    "安装包文件名改为带版本号（XingQian-0.20.97.apk），不再和旧版本同名，方便分辨"
+    "修发帖批次 bug：账号数 ≥ 4 且开着自动发帖时，以前只有账号列表最前面 3 个账号发得满",
+    "第 4 个往后的账号永远停在第一条，而且此后每 20 分钟空转一轮，一直空转到跨天",
+    "根因：签到选批次的兜底分支在签到池跑空后恒等于 ready.take(3) —— 一个固定不变的前 3 个",
+    "发帖改用「今天还欠帖子」的账号池（postPending）；签到链路一行未动，≤3 个账号行为完全不变"
   ]
 }
