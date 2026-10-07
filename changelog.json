@@ -1,5 +1,18 @@
 [
   {
+    "round": 78,
+    "version": "0.20.96",
+    "title": "星签 0.20.96",
+    "notes": [
+      "修正主按钮：浅色模式下「立即签到 / 立即发送」是白字压浅灰底，几乎看不见",
+      "原因是主题 materialButtonStyle 的 backgroundTint 把自定义渐变整块染成了单色",
+      "给两颗主按钮显式加 app:backgroundTint=\"@null\"，品牌渐变蓝恢复显示",
+      "纯界面属性修正（2 个文件各 1 个属性），零 Kotlin 改动、控件一个没删"
+    ],
+    "published": false,
+    "publishTime": "2026-10-07T07:07:20Z"
+  },
+  {
     "round": 77,
     "version": "0.20.95",
     "title": "星签 0.20.95",

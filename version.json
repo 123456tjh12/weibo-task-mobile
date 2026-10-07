@@ -1,16 +1,16 @@
 {
-  "version": "0.20.95",
-  "tag": "v0.20.95",
-  "url": "https://github.com/123456tjh12/weibo-task-mobile/releases/download/v0.20.95/app-release.apk",
-  "size": 5988270,
+  "version": "0.20.96",
+  "tag": "v0.20.96",
+  "url": "https://github.com/123456tjh12/weibo-task-mobile/releases/download/v0.20.96/app-release.apk",
+  "size": 5988290,
   "assetName": "app-release.apk",
-  "publishedAt": "2026-10-07T05:38:42Z",
-  "devVersion": "0.20.95",
-  "devVersionCode": 136,
-  "md5": "4a6dda6d6c491470a87a462d59f6f97d",
+  "publishedAt": "2026-10-07T07:07:20Z",
+  "devVersion": "0.20.96",
+  "devVersionCode": 137,
+  "md5": "d0eed43bfeb6c4e52e512dd3c70a4847",
   "notes": [
-    "全新界面改版：渐变状态卡、圆角卡片、统一表单样式",
-    "新增 4 个配色变量（含深色模式），卡片描边与投影更清晰",
-    "抽屉导航与账号列表样式统一，夜间模式同步适配"
+    "修正主按钮颜色：浅色模式下「立即签到 / 立即发送」白字压浅灰底、几乎看不见",
+    "品牌渐变蓝恢复显示，与界面设计一致",
+    "纯界面属性修正，功能与判定零改动"
   ]
 }
